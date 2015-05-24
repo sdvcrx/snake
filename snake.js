@@ -188,6 +188,13 @@
     if (gameLoop !== undefined) {
       clearInterval(gameLoop);
       gameStatus.score = 0;
+      gameStatus.speed = 15;
+      gameStatus.direction = 'down';
+
+      menu.style.display = '';
+
+      snake = new Snake(canvas.width, canvas.height);
+      food = new Food(canvas.width, canvas.height);
     }
   });
 
