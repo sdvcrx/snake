@@ -131,12 +131,9 @@
       // If hit the wall
       if (head_x >= this._width/this._size || head_x <= -1 ||
           head_y >= this._height/this._size || head_y <= -1) {
-        gameEvents.trigger('stop');
-      }
-
-      // If hit the food
-      // TODO: Add Score
-      if (head_x === food.x && head_y === food.y) {
+        gameEvents.trigger('fail');
+      } else if (head_x === food.x && head_y === food.y) {
+        // If hit the food
         console.log(this._snake.length);
         this._snake.unshift({ x: head_x, y: head_y });
         gameEvents.trigger('stop');
@@ -146,6 +143,7 @@
         }
         gameEvents.trigger('start');
       } else {
+        // check if hit snake itself
         for (var i = 1, len = this._snake.length; i < len; i++) {
           var s = this._snake[i];
           if (head_x === s.x && head_y === s.y) {
@@ -161,6 +159,8 @@
 
   var food = new Food(canvas.width, canvas.height);
   var snake = new Snake(canvas.width, canvas.height);
+
+  draw(c);
 
   gameEvents.listen('start', function() {
     if (gameStatus.paused === true) {
