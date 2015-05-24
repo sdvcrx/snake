@@ -10,7 +10,12 @@ gulp.task('deploy', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./*.js', ['js']);
+  return gulp.watch([
+    './snake.js',
+    './index.html'
+  ]).on('change', function(file) {
+    gulp.src(file.path).pipe(connect.reload());
+  });
 });
 
 gulp.task('serve', function() {

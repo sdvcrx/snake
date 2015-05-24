@@ -1,14 +1,25 @@
 (function () {
 
+  var browserWidth = window.innerWidth;
+  var browserHight = window.innerHeight;
+
   var canvas = document.getElementById('game');
   var c = canvas.getContext('2d');
   var gameLoop;
 
+  var startButton = document.getElementById('start');
+  var menu = document.getElementsByClassName('menu')[0];
+  var score = document.getElementById('score');
+
+  canvas.width = browserWidth;
+  canvas.height = browserHight;
+
   var gameStatus = {
-    width: canvas.width,
-    height: canvas.height,
+    width: browserWidth,
+    height: browserHight,
     direction: 'down',
     paused: false,
+    score: 0,
     speed: 15
   };
 
@@ -122,21 +133,20 @@
       // If hit the wall
       if (head_x >= this._width/this._size || head_x <= -1 ||
           head_y >= this._height/this._size || head_y <= -1) {
-        gameEvents.trigger('stop');
-      }
-
-      // If hit the food
-      // TODO: Add Score
-      if (head_x === food.x && head_y === food.y) {
+        gameEvents.trigger('fail');
+      } else if (head_x === food.x && head_y === food.y) {
+        // If hit the food
         console.log(this._snake.length);
         this._snake.unshift({ x: head_x, y: head_y });
         gameEvents.trigger('stop');
+        gameStatus.score += 10;
         food = new Food(canvas.width, canvas.height);
         if (gameStatus.speed <= 50) {
           gameStatus.speed += 2;
         }
         gameEvents.trigger('start');
       } else {
+        // check if hit snake itself
         for (var i = 1, len = this._snake.length; i < len; i++) {
           var s = this._snake[i];
           if (head_x === s.x && head_y === s.y) {
@@ -153,10 +163,13 @@
   var food = new Food(canvas.width, canvas.height);
   var snake = new Snake(canvas.width, canvas.height);
 
+  draw(c);
+
   gameEvents.listen('start', function() {
     if (gameStatus.paused === true) {
       gameStatus.paused = false;
     }
+    score.innerHTML = gameStatus.score;
     gameLoop = setInterval(function() {
       draw(c);
       food.draw(c);
@@ -174,6 +187,14 @@
   gameEvents.listen('fail', function() {
     if (gameLoop !== undefined) {
       clearInterval(gameLoop);
+      gameStatus.score = 0;
+      gameStatus.speed = 15;
+      gameStatus.direction = 'down';
+
+      menu.style.display = '';
+
+      snake = new Snake(canvas.width, canvas.height);
+      food = new Food(canvas.width, canvas.height);
     }
   });
 
@@ -184,7 +205,6 @@
     }
   });
 
-  gameEvents.trigger('start');
 
   document.addEventListener('keyup', function(event) {
     event.preventDefault();
@@ -223,6 +243,12 @@
         }
         break;
     }
+  });
+
+  startButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    gameEvents.trigger('start');
+    menu.style.display = 'none';
   });
 
 })();
