@@ -7,6 +7,9 @@
   var c = canvas.getContext('2d');
   var gameLoop;
 
+  var startButton = document.getElementById('start');
+  var menu = document.getElementsByClassName('menu')[0];
+
   canvas.width = browserWidth;
   canvas.height = browserHight;
 
@@ -190,7 +193,6 @@
     }
   });
 
-  gameEvents.trigger('start');
 
   document.addEventListener('keyup', function(event) {
     event.preventDefault();
@@ -229,6 +231,12 @@
         }
         break;
     }
+  });
+
+  startButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    gameEvents.trigger('start');
+    menu.style.display = 'none';
   });
 
 })();
