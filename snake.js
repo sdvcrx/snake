@@ -1,12 +1,18 @@
 (function () {
 
+  var browserWidth = window.innerWidth;
+  var browserHight = window.innerHeight;
+
   var canvas = document.getElementById('game');
   var c = canvas.getContext('2d');
   var gameLoop;
 
+  canvas.width = browserWidth;
+  canvas.height = browserHight;
+
   var gameStatus = {
-    width: canvas.width,
-    height: canvas.height,
+    width: browserWidth,
+    height: browserHight,
     direction: 'down',
     paused: false,
     speed: 15
