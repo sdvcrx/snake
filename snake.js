@@ -9,6 +9,7 @@
 
   var startButton = document.getElementById('start');
   var menu = document.getElementsByClassName('menu')[0];
+  var score = document.getElementById('score');
 
   canvas.width = browserWidth;
   canvas.height = browserHight;
@@ -18,6 +19,7 @@
     height: browserHight,
     direction: 'down',
     paused: false,
+    score: 0,
     speed: 15
   };
 
@@ -137,6 +139,7 @@
         console.log(this._snake.length);
         this._snake.unshift({ x: head_x, y: head_y });
         gameEvents.trigger('stop');
+        gameStatus.score += 10;
         food = new Food(canvas.width, canvas.height);
         if (gameStatus.speed <= 50) {
           gameStatus.speed += 2;
@@ -166,6 +169,7 @@
     if (gameStatus.paused === true) {
       gameStatus.paused = false;
     }
+    score.innerHTML = gameStatus.score;
     gameLoop = setInterval(function() {
       draw(c);
       food.draw(c);
@@ -183,6 +187,7 @@
   gameEvents.listen('fail', function() {
     if (gameLoop !== undefined) {
       clearInterval(gameLoop);
+      gameStatus.score = 0;
     }
   });
 
